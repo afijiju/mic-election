@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MIC English School Akalad - EVM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('school-bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .blur {
+      backdrop-filter: blur(6px);
+      background-color: rgba(255, 255, 255, 0.6);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #0d47a1;
+    }
+
+    input, button {
+      padding: 14px;
+      width: 90%;
+      max-width: 400px;
+      margin: 10px auto;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      display: block;
+    }
+
+    button {
+      background-color: #1976d2;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #0d47a1;
+    }
+
+    #logoutBtn, #resetBtn {
+      background-color: #f44336;
+    }
+
+    #logoutBtn:hover, #resetBtn:hover {
+      background-color: #c62828;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .candidate-block {
+      margin: 30px 0;
+    }
+
+    .candidate-block h3 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #333;
+      text-align: left;
+      padding-left: 10px;
+    }
+
+    .candidate-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .candidate {
+      background-color: #e3f2fd;
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid #90caf9;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .candidate:hover {
+      transform: scale(1.03);
+    }
+
+    .candidate img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .candidate label {
+      display: block;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .candidate input {
+      margin-top: 10px;
+      transform: scale(1.2);
+    }
+
+    hr {
+      margin: 40px 0;
+    }
+
+    @media (max-width: 600px) {
+      .candidate img {
+        width: 70px;
+        height: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="blur">
+    <img src="miclogo.jpg" alt="School Logo" style="width: 100px; display: block; margin: auto; margin-bottom: 20px;" />
+
+    <div class="container" id="homePage">
+      <h1>MIC English School Akalad</h1>
+      <h2>Student Login</h2>
+      <input type="text" id="studentID" placeholder="Enter ID (e.g., mic)">
+      <input type="password" id="studentPass" placeholder="Enter Password">
+      <button onclick="studentLogin()">Login as Student</button>
+
+      <hr>
+
+      <h2>Admin Login</h2>
+      <input type="password" id="adminPass" placeholder="Enter Admin Password">
+      <button onclick="adminLogin()">Login as Admin</button>
+    </div>
+
+    <div class="container hidden" id="votingPage">
+      <h2>🗳️ Vote for Your Leaders</h2>
+      <form id="voteForm" onsubmit="submitVote(event)">
+
+        <div class="candidate-block">
+          <h3>Head Boy</h3>
+          <div class="candidate-list">
+            <div class="candidate">
+              <img src="clock.jpg" alt="clock">
+              <label>Hamad Bilal</label>
+              <input type="radio" name="Head Boy" value="Hamad Bilal" required>
+            </div>
+            <div class="candidate">
+              <img src="spectacles.jpg" alt="spectacles">
+              <label>Adham Ihsan</label>
+              <input type="radio" name="Head Boy" value="Adham Ihsan">
+            </div>
+          </div>
+        </div>
+<!-- Head Girl -->
+      <div class="candidate-block">
+        <h3>Head Girl</h3>
+        <div class="candidate-list">
+          <div class="candidate">
+            <img src="diamond.jpg" alt="diamond">
+            <label>Fathima Almasa</label>
+            <input type="radio" name="Head Girl" value="Fathima Almasa" required>
+          </div>
+          <div class="candidate">
+            <img src="mic.jpg" alt="mic">
+            <label>Aysha Haneef</label>
+            <input type="radio" name="Head Girl" value="Aysha Haneef">
+          </div>
+        </div>
+      </div>
+
+      <!-- Sports Captain - Boy -->
+      <div class="candidate-block">
+        <h3>Sports Captain - Boy</h3>
+        <div class="candidate-list">
+          <div class="candidate">
+            <img src="spike.jpg" alt="spike">
+            <label>Mohammed Shahzad</label>
+            <input type="radio" name="Sports Captain - Boy" value="Mohammed Shahzad" required>
+          </div>
+          <div class="candidate">
+            <img src="cricket.jpg" alt="cricket">
+            <label>Mohd Najil</label>
+            <input type="radio" name="Sports Captain - Boy" value="Mohammed Najil">
+          </div>
+        </div>
+      </div>
+
+      <!-- Sports Captain - Girl -->
+      <div class="candidate-block">
+        <h3>Sports Captain - Girl</h3>
+        <div class="candidate-list">
+          <div class="candidate">
+            <img src="chess.jpg" alt="chess">
+            <label>Riyana .U.P</label>
+            <input type="radio" name="Sports Captain - Girl" value="Riyana .U.P" required>
+          </div>
+          <div class="candidate">
+            <img src="badminton.jpg" alt="badminton">
+            <label>Samiya Mohammed</label>
+            <input type="radio" name="Sports Captain - Girl" value="Samiya Mohammed">
+          </div>
+        </div>
+      </div>
+
+      <!-- Arts Secretary -->
+      <div class="candidate-block">
+        <h3>Arts Secretary</h3>
+        <div class="candidate-list">
+          <div class="candidate">
+            <img src="flower.jpg" alt="flower">
+            <label>Fathimath Riya</label>
+            <input type="radio" name="Arts Secretary" value="Fathimath Riya" required>
+          </div>
+          <div class="candidate">
+            <img src="brush.jpg" alt="brush">
+            <label>Mohammed Nishan</label>
+            <input type="radio" name="Arts Secretary" value="Mohammed Nishan">
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Editor -->
+      <div class="candidate-block">
+        <h3>Student Editor</h3>
+        <div class="candidate-list">
+          <div class="candidate">
+            <img src="pen.jpg" alt="pen">
+            <label>Hanan Habeeb</label>
+            <input type="radio" name="Student Editor" value="Hanan Habeeb" required>
+          </div>
+        </div>
+      </div>
+
+        <!-- Repeat for other positions similarly -->
+
+        <button type="submit">✅ Submit My Vote</button>
+      </form>
+    </div>
+
+    <div class="container hidden" id="adminPage">
+      <h2>📊 Voting Results</h2>
+      <div id="resultsDisplay"></div>
+      <button id="logoutBtn" onclick="logout()">Logout</button>
+      <button id="resetBtn" onclick="resetVotes()">Reset All Votes</button>
+    </div>
+  </div>
+
+  <script>
+    let voteStorage = JSON.parse(localStorage.getItem("votes")) || [];
+
+    function studentLogin() {
+      const id = document.getElementById("studentID").value.trim().toLowerCase();
+      const pass = document.getElementById("studentPass").value.trim();
+
+      if (id === "mic" && pass === "1234") {
+        document.getElementById("homePage").classList.add("hidden");
+        document.getElementById("votingPage").classList.remove("hidden");
+        document.getElementById("voteForm").reset();
+      } else {
+        alert("Invalid student ID or password.");
+      }
+    }
+
+    function adminLogin() {
+      const pass = document.getElementById("adminPass").value.trim();
+      if (pass === "admin123") {
+        document.getElementById("homePage").classList.add("hidden");
+        document.getElementById("adminPage").classList.remove("hidden");
+        showResults();
+      } else {
+        alert("Invalid admin password.");
+      }
+    }
+
+    function submitVote(event) {
+      event.preventDefault();
+      const form = document.getElementById("voteForm");
+      const formData = new FormData(form);
+
+      const positions = [
+        "Head Boy", "Head Girl", "Sports Captain - Boy",
+        "Sports Captain - Girl", "Arts Secretary", "Student Editor"
+      ];
+
+      const votes = {};
+      for (const position of positions) {
+        const vote = formData.get(position);
+        if (!vote) {
+          alert(`Please vote for ${position}.`);
+          return;
+        }
+        votes[position] = vote;
+      }
+
+      voteStorage.push(votes);
+      localStorage.setItem("votes", JSON.stringify(voteStorage));
+
+      alert("✅ Your vote has been submitted successfully!");
+      form.reset();
+      document.getElementById("votingPage").classList.add("hidden");
+      document.getElementById("homePage").classList.remove("hidden");
+      document.getElementById("studentID").value = "";
+      document.getElementById("studentPass").value = "";
+      location.reload();
+    }
+
+    function showResults() {
+      const results = {};
+      voteStorage.forEach(vote => {
+        for (const position in vote) {
+          const name = vote[position];
+          if (!results[position]) results[position] = {};
+          if (!results[position][name]) results[position][name] = 0;
+          results[position][name]++;
+        }
+      });
+
+      const display = document.getElementById("resultsDisplay");
+      display.innerHTML = "";
+      for (const position in results) {
+        display.innerHTML += `<h3>${position}</h3>`;
+        for (const candidate in results[position]) {
+          const count = results[position][candidate];
+          display.innerHTML += `<p><strong>${candidate}</strong>: ${count} vote(s)</p>`;
+        }
+        display.innerHTML += "<hr/>";
+      }
+    }
+
+    function logout() {
+      document.getElementById("adminPage").classList.add("hidden");
+      document.getElementById("homePage").classList.remove("hidden");
+      document.getElementById("adminPass").value = "";
+    }
+
+    function resetVotes() {
+      if (confirm("Are you sure you want to reset all votes?")) {
+        localStorage.removeItem("votes");
+        voteStorage = [];
+        showResults();
+        alert("All votes have been cleared.");
+      }
+    }
+  </script>
+</body>
+</html>
