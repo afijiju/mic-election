@@ -152,6 +152,7 @@
       <h2>🗳️ Vote for Your Leaders</h2>
       <form id="voteForm" onsubmit="submitVote(event)">
 
+        <!-- Head Boy -->
         <div class="candidate-block">
           <h3>Head Boy</h3>
           <div class="candidate-list">
@@ -167,77 +168,74 @@
             </div>
           </div>
         </div>
-<!-- Head Girl -->
-      <div class="candidate-block">
-        <h3>Head Girl</h3>
-        <div class="candidate-list">
-          <div class="candidate">
-            <img src="diamond.jpg" alt="diamond">
-            <label>Fathima Almasa</label>
-            <input type="radio" name="Head Girl" value="Fathima Almasa" required>
-          </div>
-          <div class="candidate">
-            <img src="mic.jpg" alt="mic">
-            <label>Aysha Haneef</label>
-            <input type="radio" name="Head Girl" value="Aysha Haneef">
+
+        <!-- Head Girl -->
+        <div class="candidate-block">
+          <h3>Head Girl</h3>
+          <div class="candidate-list">
+            <div class="candidate">
+              <img src="diamond.jpg" alt="diamond">
+              <label>Fathima Almasa</label>
+              <input type="radio" name="Head Girl" value="Fathima Almasa" required>
+            </div>
+            <div class="candidate">
+              <img src="mic.jpg" alt="mic">
+              <label>Aysha Haneef</label>
+              <input type="radio" name="Head Girl" value="Aysha Haneef">
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Sports Captain - Boy -->
-      <div class="candidate-block">
-        <h3>Sports Captain - Boy</h3>
-        <div class="candidate-list">
-          <div class="candidate">
-            <img src="spike.jpg" alt="spike">
-            <label>Mohammed Shahzad</label>
-            <input type="radio" name="Sports Captain - Boy" value="Mohammed Shahzad" required>
-          </div>
-          <div class="candidate">
-            <img src="cricket.jpg" alt="cricket">
-            <label>Mohd Najil</label>
-            <input type="radio" name="Sports Captain - Boy" value="Mohammed Najil">
+        <!-- Sports Captain - Boy -->
+        <div class="candidate-block">
+          <h3>Sports Captain - Boy</h3>
+          <div class="candidate-list">
+            <div class="candidate">
+              <img src="spike.jpg" alt="spike">
+              <label>Mohammed Shahzad</label>
+              <input type="radio" name="Sports Captain - Boy" value="Mohammed Shahzad" required>
+            </div>
+            <div class="candidate">
+              <img src="cricket.jpg" alt="cricket">
+              <label>Mohd Najil</label>
+              <input type="radio" name="Sports Captain - Boy" value="Mohammed Najil">
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Sports Captain - Girl -->
-      <div class="candidate-block">
-        <h3>Sports Captain - Girl</h3>
-        <div class="candidate-list">
-          <div class="candidate">
-            <img src="chess.jpg" alt="chess">
-            <label>Riyana .U.P</label>
-            <input type="radio" name="Sports Captain - Girl" value="Riyana .U.P" required>
-          </div>
-          <div class="candidate">
-            <img src="badminton.jpg" alt="badminton">
-            <label>Samiya Mohammed</label>
-            <input type="radio" name="Sports Captain - Girl" value="Samiya Mohammed">
-          </div>
-        </div>
-      </div>
-
-      <!-- Arts Secretary -->
-      <div class="candidate-block">
-        <h3>Arts Secretary</h3>
-        <div class="candidate-list">
-          <div class="candidate">
-            <img src="flower.jpg" alt="flower">
-            <label>Fathimath Riya</label>
-            <input type="radio" name="Arts Secretary" value="Fathimath Riya" required>
-          </div>
-          <div class="candidate">
-            <img src="brush.jpg" alt="brush">
-            <label>Mohammed Nishan</label>
-            <input type="radio" name="Arts Secretary" value="Mohammed Nishan">
+        <!-- Sports Captain - Girl -->
+        <div class="candidate-block">
+          <h3>Sports Captain - Girl</h3>
+          <div class="candidate-list">
+            <div class="candidate">
+              <img src="chess.jpg" alt="chess">
+              <label>Riyana .U.P</label>
+              <input type="radio" name="Sports Captain - Girl" value="Riyana .U.P" required>
+            </div>
+            <div class="candidate">
+              <img src="badminton.jpg" alt="badminton">
+              <label>Samiya Mohammed</label>
+              <input type="radio" name="Sports Captain - Girl" value="Samiya Mohammed">
+            </div>
           </div>
         </div>
-      </div>
 
-     
-
-        <!-- Repeat for other positions similarly -->
+        <!-- Arts Secretary -->
+        <div class="candidate-block">
+          <h3>Arts Secretary</h3>
+          <div class="candidate-list">
+            <div class="candidate">
+              <img src="flower.jpg" alt="flower">
+              <label>Fathimath Riya</label>
+              <input type="radio" name="Arts Secretary" value="Fathimath Riya" required>
+            </div>
+            <div class="candidate">
+              <img src="brush.jpg" alt="brush">
+              <label>Mohammed Nishan</label>
+              <input type="radio" name="Arts Secretary" value="Mohammed Nishan">
+            </div>
+          </div>
+        </div>
 
         <button type="submit">✅ Submit My Vote</button>
       </form>
@@ -246,6 +244,8 @@
     <div class="container hidden" id="adminPage">
       <h2>📊 Voting Results</h2>
       <div id="resultsDisplay"></div>
+      <p><strong>Total Votes:</strong> <span id="totalVotes">0</span></p>
+      <button onclick="exportResults()">📥 Download Results</button>
       <button id="logoutBtn" onclick="logout()">Logout</button>
       <button id="resetBtn" onclick="resetVotes()">Reset All Votes</button>
     </div>
@@ -312,7 +312,10 @@
 
     function showResults() {
       const results = {};
+      let total = 0;
+
       voteStorage.forEach(vote => {
+        total++;
         for (const position in vote) {
           const name = vote[position];
           if (!results[position]) results[position] = {};
@@ -320,6 +323,8 @@
           results[position][name]++;
         }
       });
+
+      window.currentResults = results;
 
       const display = document.getElementById("resultsDisplay");
       display.innerHTML = "";
@@ -331,6 +336,8 @@
         }
         display.innerHTML += "<hr/>";
       }
+
+      document.getElementById("totalVotes").textContent = total;
     }
 
     function logout() {
@@ -346,6 +353,29 @@
         showResults();
         alert("All votes have been cleared.");
       }
+    }
+
+    function exportResults() {
+      const results = window.currentResults;
+      if (!results) {
+        alert("No results to export.");
+        return;
+      }
+
+      let csv = "Position,Candidate,Votes\n";
+      for (const position in results) {
+        for (const candidate in results[position]) {
+          const count = results[position][candidate];
+          csv += `${position},${candidate},${count}\n`;
+        }
+      }
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "voting_results.csv";
+      a.click();
     }
   </script>
 </body>
