@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MIC School EVM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      height: 100%;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: url('school-bg.jpg') no-repeat center center/cover;
+      filter: blur(8px);
+      z-index: -1;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #004080;
+    }
+
+    input, button {
+      width: 90%;
+      max-width: 400px;
+      padding: 12px;
+      margin: 10px auto;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      display: block;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .candidate {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      margin: 10px;
+    }
+
+    .candidate img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .actions {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .admin-results {
+      white-space: pre-wrap;
+      background: #f0f8ff;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container" id="loginPage">
+  <h1>MIC School Voting System</h1>
+  <h2>Student Login</h2>
+  <input type="text" id="studentID" placeholder="Enter ID">
+  <input type="password" id="studentPass" placeholder="Enter Password">
+  <button onclick="studentLogin()">Login as Student</button>
+
+  <hr />
+
+  <h2>Admin Login</h2>
+  <input type="password" id="adminPass" placeholder="Enter Admin Password">
+  <button onclick="adminLogin()">Login as Admin</button>
+</div>
+
+<!-- Voting Page -->
+<div class="container hidden" id="votingPage">
+  <h2>🗳️ Cast Your Vote</h2>
+  <form id="voteForm" onsubmit="submitVote(event)">
+    <h3>Head Boy</h3>
+    <div class="grid">
+      <div class="candidate">
+        <img src="clock.jpg" alt="Clock">
+        <p>Hamad</p>
+        <input type="radio" name="HeadBoy" value="Hamad" required>
+      </div>
+      <div class="candidate">
+        <img src="spectacles.jpg" alt="Spectacles">
+        <p>Adham</p>
+        <input type="radio" name="HeadBoy" value="Adham">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit">Submit Vote</button>
+    </div>
+  </form>
+</div>
+
+<!-- Admin Page -->
+<div class="container hidden" id="adminPage">
+  <h2>📊 Voting Results</h2>
+  <div class="admin-results" id="resultsDisplay"></div>
+  <div class="actions">
+    <button onclick="downloadResults()">Download Results</button>
+    <button onclick="resetVotes()">Reset Votes</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<script>
+  let votes = JSON.parse(localStorage.getItem('votes')) || [];
+
+  function studentLogin() {
+    const id = document.getElementById("studentID").value.trim();
+    const pass = document.getElementById("studentPass").value.trim();
+
+    if (localStorage.getItem("voted") === "yes") {
+      alert("You have already voted.");
+      return;
+    }
+
+    if (id === "mic" && pass === "1234") {
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("votingPage").classList.remove("hidden");
+      document.getElementById("studentID").value = "";
+      document.getElementById("studentPass").value = "";
+    } else {
+      alert("Invalid login");
+    }
+  }
+
+  function adminLogin() {
+    const pass = document.getElementById("adminPass").value.trim();
+    if (pass === "admin123") {
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("adminPage").classList.remove("hidden");
+      showResults();
+    } else {
+      alert("Wrong admin password");
+    }
+  }
+
+  function submitVote(e) {
+    e.preventDefault();
+    const form = document.getElementById("voteForm");
+    const vote = {
+      HeadBoy: form.HeadBoy.value
+    };
+
+    votes.push(vote);
+    localStorage.setItem("votes", JSON.stringify(votes));
+    localStorage.setItem("voted", "yes");
+
+    alert("Vote submitted!");
+
+    form.reset();
+    document.getElementById("votingPage").classList.add("hidden");
+    document.getElementById("loginPage").classList.remove("hidden");
+
+    // Clear ID/Password fields
+    document.getElementById("studentID").value = "";
+    document.getElementById("studentPass").value = "";
+    location.reload();
+  }
+
+  function showResults() {
+    const count = {};
+
+    for (const vote of votes) {
+      for (const key in vote) {
+        const name = vote[key];
+        count[key] = count[key] || {};
+        count[key][name] = (count[key][name] || 0) + 1;
+      }
+    }
+
+    let text = `Total votes: ${votes.length}\n`;
+    for (const role in count) {
+      text += `\n${role}:\n`;
+      for (const name in count[role]) {
+        text += `- ${name}: ${count[role][name]} votes\n`;
+      }
+    }
+
+    document.getElementById("resultsDisplay").textContent = text;
+  }
+
+  function logout() {
+    document.getElementById("adminPage").classList.add("hidden");
+    document.getElementById("loginPage").classList.remove("hidden");
+    document.getElementById("adminPass").value = "";
+  }
+
+  function resetVotes() {
+    if (confirm("Are you sure you want to reset all votes?")) {
+      localStorage.removeItem("votes");
+      localStorage.removeItem("voted");
+      votes = [];
+      showResults();
+    }
+  }
+
+  function downloadResults() {
+    const headers = ["HeadBoy"];
+    let csv = headers.join(",") + "\n";
+
+    votes.forEach(vote => {
+      let row = headers.map(h => vote[h] || "").join(",");
+      csv += row + "\n";
+    });
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "voting_results.csv";
+    a.click();
+  }
+</script>
+
+</body>
+</html>
